@@ -1,30 +1,27 @@
-var recipeSearch = document.querySelector(".bodyContainer");
+var displayArea = document.querySelector(".images");
+var search = document.querySelector("#search");
 
-const url = 'http://www.recipepuppy.com/api/';
+let url = `http://recipepuppyproxy.herokuapp.com/api/?q=${search.value}`;
 
-fetch(url).then(function (response) {
-    response.json().then(function (data) {
-        console.log(data);
+function ourCallback(e) {
+    if (e.keyCode === 13) {
+        let url = `http://recipepuppyproxy.herokuapp.com/api/?q=${search.value}`;
+        fetch(url).then(function (response) {
+            response.json().then(function (data) {
+                let results = data.results;
+                console.log(results);
 
+                for (var i = 0; i < results.length; i++) {
+                    let imgSrc = results[i].thumbnail;
+                    if (imgSrc === '') {
+                        displayArea.innerHTML += `<span>No Image Available</span>;`
+                    } else {
+                        displayArea.innerHTML += `<img src="${imgSrc}" alt="" class="thumb">`
+                    }
+                }
+            });
+        });
+    }
+}
 
-        recipeSearch.innerHTML +=
-            `    
-    <div>
-        <input type="text" placeholder="Search">
-    </div>
-
-    <hr>
-
-    <div class="images">
-        <img src="http://placekitten.com/260/260" alt="" class="thumb">
-        <img src="http://placekitten.com/260/260" alt="" class="thumb">
-        <img src="http://placekitten.com/260/260" alt="" class="thumb">
-        <img src="http://placekitten.com/260/260" alt="" class="thumb">
-        <img src="http://placekitten.com/260/260" alt="" class="thumb">
-        <img src="http://placekitten.com/260/260" alt="" class="thumb">
-        <img src="http://placekitten.com/260/260" alt="" class="thumb">
-        <img src="http://placekitten.com/260/260" alt="" class="thumb">
-    </div>
-        `
-    });
-});
+search.addEventListener("keypress", ourCallback);
